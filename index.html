@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrat de Service</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Anime.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <!-- html2pdf.js pour la génération de PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        .contract-section {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .form-section {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- En-tête -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">Contrat de Service</h1>
+            <p class="mt-3 text-xl text-gray-500">Veuillez remplir vos informations pour générer votre contrat</p>
+        </div>
+
+        <!-- Section Formulaire -->
+        <div class="form-section bg-white p-6 rounded-lg shadow-md mb-8">
+            <form id="clientForm" class="space-y-4">
+                <div>
+                    <label for="clientName" class="block text-sm font-medium text-gray-700">Nom complet <span class="text-red-500">*</span></label>
+                    <input type="text" id="clientName" name="clientName" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                
+                <div>
+                    <label for="clientEmail" class="block text-sm font-medium text-gray-700">Email <span class="text-red-500">*</span></label>
+                    <input type="email" id="clientEmail" name="clientEmail" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                
+                <div>
+                    <label for="companyName" class="block text-sm font-medium text-gray-700">Nom de l'entreprise (facultatif)</label>
+                    <input type="text" id="companyName" name="companyName" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                    <button type="button" id="generatePdf" class="flex-1 inline-flex justify-center items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <i class="fas fa-file-download mr-2"></i> Télécharger le contrat en PDF
+                    </button>
+                    
+                    <button type="button" id="sendWhatsApp" class="flex-1 inline-flex justify-center items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        <i class="fab fa-whatsapp mr-2"></i> Envoyer sur WhatsApp
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Section Contrat -->
+        <div id="contractContent" class="contract-section bg-white p-6 sm:p-8 rounded-lg shadow-md">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">CONTRAT DE PRESTATION DE SERVICES</h2>
+            </div>
+            
+            <div class="text-sm text-gray-700 space-y-4">
+                <p>Fait à <span class="font-semibold">Port-au-Prince</span>, le <span class="font-semibold" id="currentDate"></span></p>
+                
+                <p>Entre les soussignés :</p>
+                
+                <p>D'une part, <span class="font-semibold">Vitch web studio</span>, ci-après désigné comme "le Prestataire",</p>
+                
+                <p>Et d'autre part, <span class="font-semibold" id="contractClientName">[NOM DU CLIENT]</span><span id="contractCompanyName"></span>, ci-après désigné(e) comme "le Client",</p>
+                
+                <p>Il a été convenu ce qui suit :</p>
+                
+                <h3 class="text-lg font-bold mt-6 mb-2">ARTICLE 1 - OBJET</h3>
+                <p>Le présent contrat a pour objet de définir les conditions dans lesquelles le Prestataire s'engage à fournir au Client les services décrits ci-après.</p>
+                
+                <h3 class="text-lg font-bold mt-6 mb-2">ARTICLE 2 - PRESTATIONS</h3>
+                <p>Le Prestataire s'engage à réaliser pour le Client les prestations suivantes :</p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li>Développement de solutions web sur mesure</li>
+                    <li>Conception d'interfaces utilisateur modernes et responsives</li>
+                    <li>Intégration de fonctionnalités avancées selon les besoins du Client</li>
+                    <li>Maintenance et support technique</li>
+                </ul>
+                
+                <h3 class="text-lg font-bold mt-6 mb-2">ARTICLE 3 - DURÉE</h3>
+                <p>Le présent contrat prend effet à compter de la date de signature et reste valable pour une durée d'un an, renouvelable par tacite reconduction.</p>
+                
+                <h3 class="text-lg font-bold mt-6 mb-2">ARTICLE 4 - TARIFS ET FACTURATION</h3>
+                <p>Les tarifs des prestations sont déterminés selon la nature des services fournis et font l'objet d'un devis préalable accepté par les deux parties.</p>
+                <p>Les factures sont payables dans un délai de 3 jours à compter de leur date d'émission.</p>
+                
+                <h3 class="text-lg font-bold mt-6 mb-2">ARTICLE 5 - CONFIDENTIALITÉ</h3>
+                <p>Les parties s'engagent à garder confidentielles toutes les informations échangées dans le cadre de l'exécution du présent contrat.</p>
+                
+                <h3 class="text-lg font-bold mt-6 mb-2">ARTICLE 6 - RÉSILIATION</h3>
+                <p>Chaque partie peut résilier le présent contrat moyennant un préavis de 30 jours notifié par écrit.</p>
+                
+                <h3 class="text-lg font-bold mt-6 mb-2">ARTICLE 7 - LITIGES</h3>
+                <p>En cas de litige, les parties s'efforceront de trouver une solution amiable. À défaut, les tribunaux compétents seront ceux de Port-au-Prince.</p>
+                
+                <div class="mt-12 pt-8 border-t border-gray-200">
+                    <div class="flex flex-col sm:flex-row justify-between">
+                        <div class="mb-8 sm:mb-0">
+                            <p class="font-semibold">LE CLIENT</p>
+                            <p class="mt-2" id="signatureClientName">[NOM DU CLIENT]</p>
+                            <p class="mt-1 text-sm" id="signatureClientEmail">[EMAIL DU CLIENT]</p>
+                            <div class="mt-4 h-16 border-b border-gray-400"></div>
+                            <p class="mt-4">Signature</p>
+                        </div>
+                        
+                        <div>
+                            <p class="font-semibold">LE PRESTATAIRE</p>
+                            <p class="mt-2">Toussaint leo vitch</p>
+                            <p class="mt-1 text-sm">Vitch web studio</p>
+                            <div class="mt-4 h-16 border-b border-gray-400"></div>
+                            <p class="mt-4">Signature</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animation des sections avec Anime.js
+        anime({
+            targets: '.form-section',
+            opacity: 1,
+            translateY: 0,
+            duration: 800,
+            easing: 'easeOutExpo'
+        });
+        
+        anime({
+            targets: '.contract-section',
+            opacity: 1,
+            translateY: 0,
+            duration: 800,
+            delay: 200,
+            easing: 'easeOutExpo'
+        });
+        
+        // Mise à jour de la date actuelle
+        function updateCurrentDate() {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString('fr-FR', options);
+        }
+        updateCurrentDate();
+        
+        // Gestion du formulaire
+        const clientForm = document.getElementById('clientForm');
+        const generatePdfBtn = document.getElementById('generatePdf');
+        const sendWhatsAppBtn = document.getElementById('sendWhatsApp');
+        
+        function validateForm() {
+            const clientName = document.getElementById('clientName').value.trim();
+            const clientEmail = document.getElementById('clientEmail').value.trim();
+            
+            if (!clientName) {
+                alert('Veuillez entrer votre nom complet');
+                return false;
+            }
+            
+            if (!clientEmail) {
+                alert('Veuillez entrer votre adresse email');
+                return false;
+            }
+            
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clientEmail)) {
+                alert('Veuillez entrer une adresse email valide');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        clientForm.addEventListener('input', function() {
+            updateContractContent();
+        });
+        
+        function updateContractContent() {
+            const clientName = document.getElementById('clientName').value.trim() || '[NOM DU CLIENT]';
+            const companyName = document.getElementById('companyName').value.trim();
+            const clientEmail = document.getElementById('clientEmail').value.trim() || '[EMAIL DU CLIENT]';
+            
+            document.getElementById('contractClientName').textContent = clientName;
+            document.getElementById('signatureClientName').textContent = clientName;
+            document.getElementById('signatureClientEmail').textContent = clientEmail;
+            
+            const companyElement = document.getElementById('contractCompanyName');
+            if (companyName) {
+                companyElement.textContent = `représentant(e) ${companyName},`;
+            } else {
+                companyElement.textContent = '';
+            }
+        }
+        
+        // Génération du PDF
+        generatePdfBtn.addEventListener('click', function() {
+            if (this.disabled) return;
+            if (!validateForm()) return;
+            
+            this.disabled = true;
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Génération en cours...';
+            
+            // Mettre à jour le contenu du contrat avant génération
+            updateContractContent();
+            
+            // Options pour html2pdf
+            const element = document.getElementById('contractContent');
+            const clientName = document.getElementById('clientName').value.trim();
+            
+            const opt = {
+                margin: [15, 5, 15, 5],
+                filename: `Contrat_Service_${clientName.replace(/\s+/g, '_')}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2,
+                    logging: true,
+                    useCORS: true
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'a4', 
+                    orientation: 'portrait',
+                    compress: true
+                }
+            };
+            
+            // Générer le PDF
+            html2pdf()
+                .set(opt)
+                .from(element)
+                .save()
+                .then(() => {
+                    alert(`Contrat généré avec succès pour ${clientName}`);
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                    
+                    // Animation de confirmation
+                    anime({
+                        targets: generatePdfBtn,
+                        scale: [1, 1.05, 1],
+                        duration: 600,
+                        easing: 'easeInOutSine'
+                    });
+                })
+                .catch(err => {
+                    console.error('Erreur lors de la génération du PDF:', err);
+                    alert('Une erreur est survenue lors de la génération du PDF');
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                });
+        });
+        
+        // Envoi WhatsApp
+        sendWhatsAppBtn.addEventListener('click', function() {
+            if (this.disabled) return;
+            if (!validateForm()) {
+                this.disabled = false;
+                return;
+            }
+            
+            this.disabled = true;
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Préparation...';
+            
+            const clientName = document.getElementById('clientName').value.trim();
+            const companyName = document.getElementById('companyName').value.trim();
+            const clientEmail = document.getElementById('clientEmail').value.trim();
+            
+            let message = `Bonjour,\n\n`;
+            message += `Je viens de remplir le contrat de service.\n`;
+            message += `Voici mes informations :\n`;
+            message += `- Nom : ${clientName}\n`;
+            if (companyName) message += `- Entreprise : ${companyName}\n`;
+            message += `- Email : ${clientEmail}\n\n`;
+            message += `Pourriez-vous m'envoyer le contrat signé ?`;
+            
+            setTimeout(() => {
+                const encodedMessage = encodeURIComponent(message);
+                window.open(`https://wa.me/50935601379?text=${encodedMessage}`, '_blank');
+                
+                this.innerHTML = originalText;
+                this.disabled = false;
+                
+                // Animation de confirmation
+                anime({
+                    targets: sendWhatsAppBtn,
+                    scale: [1, 1.05, 1],
+                    duration: 600,
+                    easing: 'easeInOutSine'
+                });
+            }, 500);
+        });
+    });
+    </script>
+</body>
+</html>
