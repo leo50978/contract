@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrat — Metatron Multi-Services</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Anime.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+    <!-- html2pdf -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        .contract-section { opacity: 0; transform: translateY(20px); }
+        .form-section { opacity: 0; transform: translateY(-20px); }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+
+<div class="max-w-4xl mx-auto">
+
+    <!-- EN-TÊTE -->
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">Contrat de vente d’ouvrages scolaires</h1>
+        <p class="mt-3 text-lg text-gray-600">Metatron Multi-Services</p>
+        <p class="text-sm text-gray-700">Arcahaïe, Bassin Mahé — Tél : +509 3381-5990 / 3123-1974</p>
+        <p class="text-sm text-gray-700">Email : johntech0000@gmail.com</p>
+    </div>
+
+
+    <!-- FORMULAIRE DÉTAILLÉ -->
+    <div class="form-section bg-white p-6 rounded-lg shadow-md mb-8">
+        <form id="clientForm" class="space-y-4">
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Nom du client / Institution *</label>
+                <input type="text" id="clientInstitution" required class="mt-1 block w-full border rounded-md py-2 px-3">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Nom du représentant *</label>
+                    <input type="text" id="repName" required class="mt-1 block w-full border rounded-md py-2 px-3">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Fonction</label>
+                    <input type="text" id="repRole" placeholder="Ex : Directeur, Comptable..." class="mt-1 block w-full border rounded-md py-2 px-3">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Email *</label>
+                    <input type="email" id="clientEmail" required class="mt-1 block w-full border rounded-md py-2 px-3">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Téléphone *</label>
+                    <input type="tel" id="clientPhone" placeholder="+509 ..." required class="mt-1 block w-full border rounded-md py-2 px-3">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Adresse de livraison</label>
+                <input type="text" id="clientAddress" placeholder="Optionnel" class="mt-1 block w-full border rounded-md py-2 px-3">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Niveau</label>
+                    <select id="level" class="mt-1 block w-full border rounded-md py-2 px-3">
+                        <option value="">— Choisir —</option>
+                        <option>7e AF</option>
+                        <option>8e AF</option>
+                        <option>9e AF</option>
+                        <option>NS I à IV</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Quantité</label>
+                    <input type="number" id="quantity" class="mt-1 block w-full border rounded-md py-2 px-3">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Acompte (%)</label>
+                    <input type="number" id="acompte" value="30" class="mt-1 block w-full border rounded-md py-2 px-3">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Délais de livraison (jours)</label>
+                <input type="number" id="deliveryDays" placeholder="Ex : 7" class="mt-1 block w-full border rounded-md py-2 px-3">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Remarques (optionnel)</label>
+                <input type="text" id="notes" class="mt-1 block w-full border rounded-md py-2 px-3">
+            </div>
+
+            <!-- BOUTONS -->
+            <div class="flex flex-col sm:flex-row gap-4 pt-4">
+
+                <button type="button" id="generatePdf"
+                        class="flex-1 inline-flex justify-center items-center py-2 px-4 rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                    <i class="fas fa-file-download mr-2"></i> Télécharger le contrat PDF
+                </button>
+
+                <button type="button" id="sendWhatsApp"
+                        class="flex-1 inline-flex justify-center items-center py-2 px-4 rounded-md text-white bg-green-600 hover:bg-green-700">
+                    <i class="fab fa-whatsapp mr-2"></i> Envoyer via WhatsApp
+                </button>
+
+            </div>
+
+        </form>
+    </div>
+
+    <!-- PARTIE 2 — CONTENU DU CONTRAT + SCRIPTS -->
+    <!-- SECTION CONTRAT -->
+    <div id="contractContent" class="contract-section bg-white p-6 sm:p-8 rounded-lg shadow-md mt-6">
+        <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">CONTRAT DE VENTE D’OUVRAGES SCOLAIRES</h2>
+        </div>
+
+        <div class="text-sm text-gray-700 space-y-4">
+            <p>Fait à <span class="font-semibold">Arcahaïe</span>, le <span class="font-semibold" id="currentDate"></span></p>
+
+            <p>Entre les soussignés :</p>
+
+            <p>D'une part, <span class="font-semibold">Metatron Multi-Services</span>, représentée par M. <span class="font-semibold">Johnsley Alexandre</span>, ci-après dénommée « le Fournisseur » ;</p>
+
+            <p>D'autre part, <span class="font-semibold" id="contractClientInstitution">[Nom du client / Institution]</span>, représenté(e) par <span class="font-semibold" id="contractRepName">[Nom, fonction]</span>, ci-après dénommé(e) « le Client ».</p>
+
+            <h3 class="text-lg font-bold mt-6 mb-2">ARTICLE 1 - OBJET DU CONTRAT</h3>
+            <p>Le présent contrat a pour objet la vente et la livraison d’ouvrages scolaires édités et distribués par Metatron Multi-Services, notamment :</p>
+            <ul class="list-disc pl-5 mt-2 space-y-1">
+                <li><strong>Éducation à la Technologie et aux Activités Productives (ETAP)</strong> : 7e, 8e et 9e année fondamentale.</li>
+                <li><strong>Nouveau secondaire I à IV</strong> : ouvrages disponibles en Éducation à la Technologie et Activités Productives, Histoire de l’Art, Arts Plastiques, EPS, Éducation à la Citoyenneté et Informatique.</li>
+            </ul>
+
+            <h3 class="text-lg font-bold mt-6 mb-2">ARTICLE 2 - TARIFS UNITAIRES (7e à 9e AF)</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border px-3 py-2 text-left">Niveau</th>
+                            <th class="border px-3 py-2 text-right">1–9 exemplaires</th>
+                            <th class="border px-3 py-2 text-right">10–20 exemplaires</th>
+                            <th class="border px-3 py-2 text-right">21–50 exemplaires</th>
+                            <th class="border px-3 py-2 text-right">51 et + exemplaires</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="border px-3 py-2">7e AF</td>
+                            <td class="border px-3 py-2 text-right">250 HTG</td>
+                            <td class="border px-3 py-2 text-right">200 HTG</td>
+                            <td class="border px-3 py-2 text-right">170 HTG</td>
+                            <td class="border px-3 py-2 text-right">140 HTG</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-3 py-2">8e AF</td>
+                            <td class="border px-3 py-2 text-right">250 HTG</td>
+                            <td class="border px-3 py-2 text-right">200 HTG</td>
+                            <td class="border px-3 py-2 text-right">170 HTG</td>
+                            <td class="border px-3 py-2 text-right">140 HTG</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-3 py-2">9e AF</td>
+                            <td class="border px-3 py-2 text-right">300 HTG</td>
+                            <td class="border px-3 py-2 text-right">250 HTG</td>
+                            <td class="border px-3 py-2 text-right">200 HTG</td>
+                            <td class="border px-3 py-2 text-right">170 HTG</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="text-lg font-bold mt-6 mb-2">ARTICLE 3 - TARIFS SECONDAIRE (NS I à IV)</h3>
+            <p>Les prix des ouvrages du secondaire (Histoire de l’Art, Arts Plastiques, EPS, Éducation à la Citoyenneté, Informatique, ETAP) sont fixés après discussion par WhatsApp ou en réunion, selon la quantité commandée.</p>
+
+            <h3 class="text-lg font-bold mt-6 mb-2">ARTICLE 4 - COMMANDE ET PAIEMENT</h3>
+            <p>La commande est confirmée après signature du présent contrat et versement d’un acompte de <span id="contractAcompte" class="font-semibold">[XX] %</span>.</p>
+            <p>Le solde est payable à la livraison ou selon un échéancier convenu.</p>
+            <p>Les paiements se font en gourdes haïtiennes (HTG) par espèces, virement ou MonCash.</p>
+
+            <h3 class="text-lg font-bold mt-6 mb-2">ARTICLE 5 - LIVRAISON</h3>
+            <p>Les ouvrages seront livrés à l’adresse indiquée par le Client dans un délai de <span id="contractDeliveryDays" class="font-semibold">[XX]</span> jours après confirmation de la commande.</p>
+
+            <h3 class="text-lg font-bold mt-6 mb-2">ARTICLE 6 - RESPONSABILITÉ</h3>
+            <p>Le Fournisseur s’engage à livrer des ouvrages en bon état. Aucune réclamation ne sera acceptée après 48 heures suivant la livraison.</p>
+
+            <h3 class="text-lg font-bold mt-6 mb-2">ARTICLE 7 - RÉSILIATION</h3>
+            <p>Toute annulation de commande doit être signalée par écrit au moins 7 jours avant la date prévue de livraison.</p>
+
+            <h3 class="text-lg font-bold mt-6 mb-2">ARTICLE 8 - LITIGES</h3>
+            <p>En cas de litige, les parties privilégieront un règlement amiable. À défaut, le différend sera soumis aux juridictions compétentes en Haïti.</p>
+
+            <div class="mt-12 pt-8 border-t border-gray-200">
+                <div class="flex flex-col sm:flex-row justify-between">
+                    <div class="mb-8 sm:mb-0">
+                        <p class="font-semibold">LE FOURNISSEUR</p>
+                        <p class="mt-2">Metatron Multi-Services</p>
+                        <p class="mt-1 text-sm">M. Johnsley Alexandre</p>
+                        <p class="mt-1 text-sm">Arcahaïe, Bassin Mahé</p>
+                        <p class="mt-1 text-sm">Tél. : +509 3381-5990 / 3123-1974</p>
+                        <p class="mt-1 text-sm">E-mail : johntech0000@gmail.com</p>
+                        <div class="mt-4 h-16 border-b border-gray-400"></div>
+                        <p class="mt-4">Signature</p>
+                    </div>
+
+                    <div>
+                        <p class="font-semibold">LE CLIENT</p>
+                        <p class="mt-2 font-semibold" id="signatureClientInstitution">[Nom du client / Institution]</p>
+                        <p class="mt-1 text-sm" id="signatureRepName">[Nom, fonction]</p>
+                        <p class="mt-1 text-sm" id="signatureClientPhone">[Tél. du client]</p>
+                        <div class="mt-4 h-16 border-b border-gray-400"></div>
+                        <p class="mt-4">Signature</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div> <!-- fin max-w container -->
+
+<!-- SCRIPTS -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animations (mêmes que l'original)
+    anime({
+        targets: '.form-section',
+        opacity: 1,
+        translateY: 0,
+        duration: 800,
+        easing: 'easeOutExpo'
+    });
+
+    anime({
+        targets: '.contract-section',
+        opacity: 1,
+        translateY: 0,
+        duration: 800,
+        delay: 200,
+        easing: 'easeOutExpo'
+    });
+
+    // Date actuelle
+    function updateCurrentDate() {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('fr-FR', options);
+    }
+    updateCurrentDate();
+
+    // Éléments du formulaire
+    const clientForm = document.getElementById('clientForm');
+    const generatePdfBtn = document.getElementById('generatePdf');
+    const sendWhatsAppBtn = document.getElementById('sendWhatsApp');
+
+    function validateForm() {
+        const clientInstitution = document.getElementById('clientInstitution').value.trim();
+        const repName = document.getElementById('repName').value.trim();
+        const clientEmail = document.getElementById('clientEmail').value.trim();
+        const clientPhone = document.getElementById('clientPhone').value.trim();
+
+        if (!clientInstitution) { alert('Veuillez entrer le nom du client / institution'); return false; }
+        if (!repName) { alert('Veuillez entrer le nom du représentant'); return false; }
+        if (!clientEmail) { alert('Veuillez entrer l\'adresse email'); return false; }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clientEmail)) { alert('Veuillez entrer une adresse email valide'); return false; }
+        if (!clientPhone) { alert('Veuillez entrer un numéro de téléphone'); return false; }
+
+        const acompte = document.getElementById('acompte').value;
+        if (acompte !== '' && (isNaN(acompte) || acompte < 0 || acompte > 100)) {
+            alert('Veuillez entrer un pourcentage d\'acompte valide (0-100)');
+            return false;
+        }
+        return true;
+    }
+
+    // Mettre à jour le contenu du contrat en direct
+    clientForm.addEventListener('input', updateContractContent);
+
+    function updateContractContent() {
+        const institution = document.getElementById('clientInstitution').value.trim() || '[Nom du client / Institution]';
+        const repName = document.getElementById('repName').value.trim() || '[Nom, fonction]';
+        const repRole = document.getElementById('repRole').value.trim();
+        const clientEmail = document.getElementById('clientEmail').value.trim() || '[Email du client]';
+        const clientPhone = document.getElementById('clientPhone').value.trim() || '[Tél. du client]';
+        const clientAddress = document.getElementById('clientAddress').value.trim();
+        const acompte = document.getElementById('acompte').value;
+        const deliveryDays = document.getElementById('deliveryDays').value;
+
+        document.getElementById('contractClientInstitution').textContent = institution;
+        document.getElementById('contractRepName').textContent = repName + (repRole ? `, ${repRole}` : '');
+        document.getElementById('signatureClientInstitution').textContent = institution;
+        document.getElementById('signatureRepName').textContent = repName + (repRole ? ` — ${repRole}` : '');
+        document.getElementById('signatureClientPhone').textContent = clientPhone;
+
+        // Remplacer les champs [XX]
+        document.getElementById('contractAcompte').textContent = (acompte !== '') ? `${acompte} %` : '[XX] %';
+        document.getElementById('contractDeliveryDays').textContent = (deliveryDays !== '') ? `${deliveryDays} jours` : '[XX] jours';
+    }
+
+    // Génération PDF (mêmes options visuelles que l'original)
+    generatePdfBtn.addEventListener('click', function() {
+        if (this.disabled) return;
+        if (!validateForm()) return;
+
+        this.disabled = true;
+        const originalText = this.innerHTML;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Génération en cours...';
+
+        updateContractContent();
+
+        const element = document.getElementById('contractContent');
+        const clientInstitution = (document.getElementById('clientInstitution').value.trim() || 'Client').replace(/\s+/g, '_').replace(/[^\w\-_.]/g, '');
+        const opt = {
+            margin: [15, 5, 15, 5],
+            filename: `Contrat_Vente_Ouvrages_Metatron_${clientInstitution}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, logging: true, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true }
+        };
+
+        html2pdf().set(opt).from(element).save()
+            .then(() => {
+                alert(`Contrat généré avec succès pour ${document.getElementById('clientInstitution').value.trim()}`);
+                this.innerHTML = originalText;
+                this.disabled = false;
+                anime({ targets: generatePdfBtn, scale: [1, 1.05, 1], duration: 600, easing: 'easeInOutSine' });
+            })
+            .catch(err => {
+                console.error('Erreur lors de la génération du PDF:', err);
+                alert('Une erreur est survenue lors de la génération du PDF');
+                this.innerHTML = originalText;
+                this.disabled = false;
+            });
+    });
+
+    // Envoi WhatsApp (pré-rempli vers le numéro Metatron)
+    sendWhatsAppBtn.addEventListener('click', function() {
+        if (this.disabled) return;
+        if (!validateForm()) return;
+
+        this.disabled = true;
+        const originalText = this.innerHTML;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Préparation...';
+
+        const institution = document.getElementById('clientInstitution').value.trim();
+        const repName = document.getElementById('repName').value.trim();
+        const repRole = document.getElementById('repRole').value.trim();
+        const email = document.getElementById('clientEmail').value.trim();
+        const phone = document.getElementById('clientPhone').value.trim();
+        const level = document.getElementById('level').value;
+        const quantity = document.getElementById('quantity').value;
+        const acompte = document.getElementById('acompte').value;
+        const deliveryDays = document.getElementById('deliveryDays').value;
+        const notes = document.getElementById('notes').value.trim();
+
+        let message = `Bonjour Metatron Multi-Services,%0A%0A`;
+        message += `Je souhaite passer une commande. Voici mes informations :%0A`;
+        message += `- Institution : ${institution}%0A`;
+        message += `- Représentant : ${repName}${repRole ? ' — ' + repRole : ''}%0A`;
+        message += `- Email : ${email}%0A`;
+        message += `- Tél. : ${phone}%0A`;
+        if (level) message += `- Niveau : ${level}%0A`;
+        if (quantity) message += `- Quantité : ${quantity}%0A`;
+        if (acompte) message += `- Acompte proposé : ${acompte} % %0A`;
+        if (deliveryDays) message += `- Délai souhaité : ${deliveryDays} jours%0A`;
+        if (notes) message += `- Remarques : ${notes}%0A`;
+        message += `%0APourriez-vous me confirmer le devis et la disponibilité ? Merci.`;
+
+        const supplierNumber = '50933815990'; // Metatron (sans +)
+        const url = `https://wa.me/${supplierNumber}?text=${message}`;
+
+        window.open(url, '_blank');
+
+        setTimeout(() => {
+            this.innerHTML = originalText;
+            this.disabled = false;
+            anime({ targets: sendWhatsAppBtn, scale: [1, 1.05, 1], duration: 600, easing: 'easeInOutSine' });
+        }, 500);
+    });
+
+    // Initial update pour afficher les valeurs par défaut dans le contrat
+    updateContractContent();
+});
+</script>
+
+</body>
+</html>
